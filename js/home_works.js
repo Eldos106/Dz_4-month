@@ -17,20 +17,97 @@ emailBtn.onclick = () => {
         console.error(error)
     }
 }
-document.addEventListener('DOMContentLoaded', function() {
-    const childBlock = document.querySelector('.child_block');
-    const parentBlock = document.querySelector('.parent_block');
-    const parentWidth = parentBlock.offsetWidth;
-    const childWidth = childBlock.offsetWidth;
-    const maxPosition = parentWidth - childWidth;
-    let currentPosition = 0;
-    function moveBlock() {
-        if (currentPosition < maxPosition) {
-            currentPosition += 1;
-            childBlock.style.left = `${currentPosition}px`;
-            requestAnimationFrame(moveBlock);
+const parentBlock = document.querySelector('.parent_block');
+const childBlock = document.querySelector('.child_block');
+
+let positionX = 0
+let positionY = 0
+let direction = 'right'
+
+const offWidth = parentBlock.offsetWidth - childBlock.offsetWidth
+const offHeight = parentBlock.offsetHeight - childBlock.offsetHeight
+
+const moveBlock = () => {
+    try {
+        if (direction === 'right') {
+            if (positionX < offWidth) {
+                positionX++
+            } else {
+                direction = 'down'
+            }
+        } else if (direction === 'down') {
+            if (positionY < offHeight) {
+                positionY++
+            } else {
+                direction = 'left'
+            }
+        } else if (direction === 'left') {
+            if (positionX > 0) {
+                positionX--
+            } else {
+                direction = 'up'
+            }
+        } else if (direction === 'up') {
+            if (positionY > 0) {
+                positionY--
+            } else {
+                direction = 'right'
+            }
         }
+
+        childBlock.style.left = `${positionX}px`
+        childBlock.style.top = `${positionY}px`
+        requestAnimationFrame(moveBlock)
+    }catch (error) {
+        console.error(error)
+    }
+}
+
+moveBlock();
+
+const secondsEl = document.querySelector('#seconds')
+const startBtn = document.querySelector('#start')
+const stopBtn = document.querySelector('#stop')
+const resetBtn = document.querySelector('#reset')
+
+let counter = 0
+let inter
+let isRunning = false
+const startCount = () => {
+    try {
+        if (!isRunning) {
+        inter = setInterval(() => {
+            counter++;
+            secondsEl.textContent = counter;
+        }, 1000);
+    }
+    isRunning = true
+    }catch (error){
+        console.error(error)
+    }
+}
+startBtn.onclick = () => startCount()
+
+const stopCount = () => {
+    try {
+        isRunning = false
+        clearInterval(inter)
+    }catch (error) {
+        console.error(error)
+    }
+};
+
+stopBtn.onclick = () => stopCount()
+
+const resetCount = () => {
+    try {
+        stopCount()
+        counter = 0
+        secondsEl.textContent = counter
+    }catch (error) {
+        console.error(error)
     }
 
-    moveBlock();
-});
+};
+
+resetBtn.onclick = () => resetCount()
