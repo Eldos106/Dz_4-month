@@ -111,3 +111,36 @@ const resetCount = () => {
 };
 
 resetBtn.onclick = () => resetCount()
+
+const charactersList = document.querySelector('.characters-list');
+const xhr = new XMLHttpRequest();
+xhr.open('GET','../data/characters.json',);
+xhr.setRequestHeader('Content-type', 'application/json')
+xhr.onload = () => {
+    try {
+        if (xhr.status === 200) {
+            const characters = JSON.parse(xhr.response)
+            console.log(characters)
+            characters.forEach(item => {
+                const div = document.createElement('div')
+                div.classList.add('character-card')
+                const photo = document.createElement('div')
+                photo.classList.add('character-photo')
+                const img = document.createElement('img')
+                img.src = item.photo
+                img.alt = item.name
+                const h3 = document.createElement('h3')
+                h3.innerHTML = item.name
+                const p = document.createElement('p')
+                p.innerHTML = item.age
+                photo.append(img)
+                div.append(photo, h3, p)
+                charactersList.append(div)
+            });
+        }
+    }catch(error) {
+        console.error(error)
+    }
+}
+xhr.send()
+
