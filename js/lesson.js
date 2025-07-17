@@ -114,101 +114,39 @@ autoTabSlider();
 
 
 // CONVERTER
-const somInput = document.querySelector('#som')
-const usdInput = document.querySelector('#usd')
-const euroInput = document.querySelector('#eur')
+const somInput = document.querySelector('#som');
+const usdInput = document.querySelector('#usd');
+const euroInput = document.querySelector('#eur');
 
 const converter = async (element, targetElement, targetElement2) => {
-    const response = await fetch('../data/converter.json')
-    const data = response.json()
     try {
-        switch (element.id) {
+        const response = await fetch('../data/converter.json');
+        const data = await response.json();
 
+        switch (element.id) {
             case 'som':
-                targetElement.value = (element.value / data.usd).toFixed(2)
-                targetElement2.value = (element.value / data.eur).toFixed(2)
-                break
+                targetElement.value = (element.value / data.usd).toFixed(2);
+                targetElement2.value = (element.value / data.eur).toFixed(2);
+                break;
             case 'usd':
-                targetElement.value = (element.value * data.usd).toFixed(2)
-                targetElement2.value = (element.value * data.usd / data.eur).toFixed(2)
-                break
+                targetElement.value = (element.value * data.usd).toFixed(2);
+                targetElement2.value = (element.value * data.usd / data.eur).toFixed(2);
+                break;
             case 'eur':
-                targetElement.value = (element.value * data.eur).toFixed(2)
-                targetElement2.value = (element.value * data.eur / data.usd).toFixed(2)
-                break
+                targetElement.value = (element.value * data.eur).toFixed(2);
+                targetElement2.value = (element.value * data.eur / data.usd).toFixed(2);
+                break;
         }
 
         if (element.value === '') {
-            targetElement.value = ''
-            targetElement2.value = ''
+            targetElement.value = '';
+            targetElement2.value = '';
         }
-    }catch (error) {
-        console.error(error)
+    } catch (error) {
+        console.error('Ошибка в конвертере:', error);
     }
+};
 
-}
-
-
-converter(somInput, usdInput, euroInput)
-converter(usdInput, somInput, euroInput)
-converter(euroInput, somInput, usdInput)
-
-/// CARD SWITCHER
-
-const btnNext = document.querySelector('#btn-next')
-const btnPrev = document.querySelector('#btn-prev')
-const cardBlock = document.querySelector('.card')
-const maxId = 200
-let cardId = 1
-
-
-function fetchCard(cardId = 1) {
-    try {
-         fetch(`https://jsonplaceholder.typicode.com/todos/${cardId}`)
-            .then(response => response.json())
-            .then(data => {
-                cardBlock.innerHTML = `
-                    <p>${data.title}</p>
-                    <p>${data.completed}</p>
-                    <span>${data.id}</span>
-                `;
-            })
-    }catch (error) {
-        console.error(error)
-    }
-}
-
-const upNext = () => {
-    try {
-        if (cardId >= maxId) {
-            cardId = 1
-        }else {
-            cardId++
-        }
-        fetchCard(cardId)
-    }catch (error) {
-        console.error(error)
-    }
-}
-const prev = () => {
-    try {
-        if (cardId <= 1) {
-            cardId = maxId
-        }else {
-            cardId--
-        }
-        fetchCard(cardId)
-    }catch (error) {
-        console.error(error)
-    }
-}
-
-
-btnNext.onclick = upNext
-btnPrev.onclick = prev
-
-fetchCard();
-
-fetch('https://jsonplaceholder.typicode.com/posts')
-    .then(response => response.json())
-    .then(data => console.log(data))
+somInput.addEventListener('input', () => converter(somInput, usdInput, euroInput));
+usdInput.addEventListener('input', () => converter(usdInput, somInput, euroInput));
+euroInput.addEventListener('input', () => converter(euroInput, somInput, usdInput));
