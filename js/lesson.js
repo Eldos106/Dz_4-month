@@ -143,7 +143,7 @@ const converter = async (element, targetElement, targetElement2) => {
             targetElement2.value = '';
         }
     } catch (error) {
-        console.error('Ошибка в конвертере:', error);
+        console.error(error);
     }
 };
 
